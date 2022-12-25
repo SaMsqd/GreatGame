@@ -1,0 +1,2 @@
+window=full
+delay('fps')=34
