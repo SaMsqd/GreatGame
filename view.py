@@ -1,7 +1,8 @@
 import controll
 
 def main():
-    controll.init()
+    screen = controll.init()
+    controll.main_loop(screen)
 
 
 if __name__ == "__main__":

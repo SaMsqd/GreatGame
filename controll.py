@@ -1,10 +1,11 @@
+import sys
 import time
 import pygame
+import colors
 from pygame_widgets.button import Button, ButtonArray
 
 
-def init_n_get_screen(data) -> pygame.display:  # Инициализирует pygame и возвращает экран
-    pygame.init()
+def get_screen(data) -> pygame.display:  # Возвращает экран
     if data["window"] == "full":
         return pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     else:
@@ -30,5 +31,17 @@ def get_data_from_cfg() -> dict:  # Читает файл cfg и возвращ�
 
 
 def init():
-    screen = init_n_get_screen(get_data_from_cfg())
+    pygame.init()
+    data = get_data_from_cfg()
+    screen = get_screen(data)
+    return screen
 
+
+def main_loop(screen):
+    while True:
+        screen.fill(colors.WHITE)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        pygame.display.update()
