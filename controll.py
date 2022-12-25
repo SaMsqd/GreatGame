@@ -1,6 +1,8 @@
 import sys
 import time
 import pygame
+import pygame_widgets
+
 import colors
 from pygame_widgets.button import Button, ButtonArray
 
@@ -39,9 +41,15 @@ def init():
 
 def main_loop(screen):
     while True:
+        events = pygame.event.get()
         screen.fill(colors.WHITE)
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        pygame_widgets.update(events)
         pygame.display.update()
+
+
+def create_exit_button(screen):
+    return Button(screen)
