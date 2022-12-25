@@ -1,2 +1,2 @@
 window=full
-delay('fps')=34
+delay=68

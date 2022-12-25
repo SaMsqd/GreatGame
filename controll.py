@@ -7,7 +7,12 @@ import colors
 from pygame_widgets.button import Button, ButtonArray
 
 
-def get_screen(data) -> pygame.display:  # Возвращает экран
+secondary_thread_alive = True
+def exit():
+    pygame.quit()
+
+
+def get_screen(data) -> pygame.Surface:  # Возвращает экран
     if data["window"] == "full":
         return pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     else:
@@ -32,24 +37,39 @@ def get_data_from_cfg() -> dict:  # Читает файл cfg и возвращ�
         get_data_from_cfg()
 
 
-def init():
+def init() -> pygame.Surface:
     pygame.init()
     data = get_data_from_cfg()
     screen = get_screen(data)
     return screen
 
 
-def main_loop(screen):
-    while True:
-        events = pygame.event.get()
-        screen.fill(colors.WHITE)
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-        pygame_widgets.update(events)
-        pygame.display.update()
+def main_loop(screen) -> None:
+    fps = int(get_data_from_cfg()["delay"])
+    try:
+        while True:
+            events = pygame.event.get()
+            screen.fill(colors.WHITE)
+            for event in events:
+                if event.type == pygame.QUIT:
+                    exit()
+                    return
+            pygame_widgets.update(events)
+            pygame.display.update()
+            pygame.time.delay(fps)
+    except:
+        return
 
 
 def create_exit_button(screen):
-    return Button(screen)
+    width = 60
+    height = 50
+    x = pygame.display.get_window_size()[0] - width
+    y = pygame.display.get_window_size()[1] - height
+    return Button(screen, x, y, width, height, text="quit", onClick=exit)
+
+
+def secondary_thread():
+    while secondary_thread_alive:
+        print("Второй поток")
+        time.sleep(1)
