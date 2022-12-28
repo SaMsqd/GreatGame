@@ -4,13 +4,12 @@ import pygame_widgets
 import colors_and_scenes
 from pygame_widgets.button import Button, ButtonArray
 
-secondary_thread_alive = True
 
+secondary_thread_alive = True
 current_window_on_screen = 0
 
 
-def exit():
-    pygame.quit()
+
 
 
 def get_screen(data) -> pygame.Surface:  # Возвращает экран
@@ -45,20 +44,64 @@ def init() -> pygame.Surface:
     return screen
 
 
-def main_loop(screen, *args) -> None:
+def disable_widgets(widgets):
+    for widget in widgets:
+        widget.hide()
+        widget.disable()
+
+
+def activate_widgets(widgets):
+    for widget in widgets:
+        widget.show()
+        widget.enable()
+
+
+def create_widgets(screen):
+    return {
+        0: [
+            create_exit_button(screen),
+            create_regions(screen, count=4,
+                           on_click_funcs=(colors_and_scenes.change_scene,
+                                           colors_and_scenes.change_scene,
+                                           colors_and_scenes.change_scene,
+                                           colors_and_scenes.change_scene),
+                           on_click_params=([1], [2], [3], [4]))
+        ],
+        1: [
+            create_regions(screen, count=2),
+            create_exit_button(screen, text="return", on_click=colors_and_scenes.change_scene)
+        ],
+        2: [
+            create_exit_button(screen, text="return", on_click=colors_and_scenes.change_scene),
+        ],
+        3: [
+            create_exit_button(screen, text="return", on_click=colors_and_scenes.change_scene),
+        ],
+        4: [
+            create_exit_button(screen, text="return", on_click=colors_and_scenes.change_scene),
+        ]
+    }
+
+
+def main_loop(screen) -> None:
+    widgets = create_widgets(screen)
     fps = int(get_data_from_cfg()["delay"])
     try:
         while True:
-            colors_and_scenes.scenes[current_window_on_screen](screen, fps)
+                for key in widgets.keys():
+                    disable_widgets(widgets[key])
+                print("MainLoop тест")
+                colors_and_scenes.Run = True
+                colors_and_scenes.scenes[current_window_on_screen](screen, fps, widgets[current_window_on_screen])
     except: return
 
 
-def create_exit_button(screen):
+def create_exit_button(screen, text="quit", on_click=colors_and_scenes.Exit):
     width = 60
     height = 50
     x = pygame.display.get_window_size()[0] - width
     y = pygame.display.get_window_size()[1] - height
-    return Button(screen, x, y, width, height, text="quit", onClick=exit)
+    return Button(screen, x, y, width, height, text=text, onClick=on_click)
 
 
 def default_click_func(number: int) -> None:
@@ -90,6 +133,4 @@ def create_regions(screen: pygame.Surface, count: int = 4, text: str = list(), o
 
 def secondary_thread():
     while secondary_thread_alive:
-        print("Второй поток")
         time.sleep(1)
-    print("Второй поток кончился")

@@ -1,6 +1,9 @@
-import pygame, pygame_widgets
+import pygame
+import pygame_widgets
+import controll
 
 
+Run = True
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (200, 200, 200)
@@ -9,32 +12,81 @@ GREEN = (0, 200, 0)
 BLUE = (0, 0, 200)
 
 
-def main_scene(screen, fps):
-    events = pygame.event.get()
-    screen.fill(WHITE)
-    for event in events:
-        if event.type == pygame.QUIT:
-            exit()
-            return
-    pygame_widgets.update(events)
-    pygame.display.update()
-    pygame.time.delay(fps)
+def Exit():
+    pygame.quit()
 
 
-def first_region():
-    pass
+def Return():
+    global Run
+    Run = False
 
 
-def second_region():
-    pass
+def change_scene(number: int = 0):
+    global Run
+    controll.current_window_on_screen = number
+    Run = False
 
 
-def third_region():
-    pass
+def main_scene(screen, fps, widgets):
+    controll.activate_widgets(widgets)
+    while Run:
+        events = pygame.event.get()
+        screen.fill(WHITE)
+        for event in events:
+            if event.type == pygame.QUIT:
+                break
+        pygame_widgets.update(events)
+        pygame.display.update()
+        pygame.time.delay(fps)
 
 
-def fourth_region():
-    pass
+def first_region(screen, fps, widgets):
+    controll.activate_widgets(widgets)
+    while Run:
+        events = pygame.event.get()
+        screen.fill(WHITE)
+        pygame_widgets.update(events)
+        pygame.display.update()
+        pygame.time.delay(fps)
+
+
+def second_region(screen, fps, widgets):
+    controll.activate_widgets(widgets)
+    while Run:
+        events = pygame.event.get()
+        screen.fill(WHITE)
+        for event in events:
+            if event.type == pygame.QUIT:
+                change_scene(0)
+        pygame_widgets.update(events)
+        pygame.display.update()
+        pygame.time.delay(fps)
+
+
+def third_region(screen, fps, widgets):
+    controll.activate_widgets(widgets)
+    while Run:
+        events = pygame.event.get()
+        screen.fill(WHITE)
+        for event in events:
+            if event.type == pygame.QUIT:
+                change_scene(0)
+        pygame_widgets.update(events)
+        pygame.display.update()
+        pygame.time.delay(fps)
+
+
+def fourth_region(screen, fps, widgets):
+    controll.activate_widgets(widgets)
+    while Run:
+        events = pygame.event.get()
+        screen.fill(WHITE)
+        for event in events:
+            if event.type == pygame.QUIT:
+                change_scene(0)
+        pygame_widgets.update(events)
+        pygame.display.update()
+        pygame.time.delay(fps)
 
 
 scenes = {

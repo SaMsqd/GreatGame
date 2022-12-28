@@ -1,2 +1,2 @@
 window=full
-delay=68
+delay=34
