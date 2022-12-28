@@ -1,13 +1,14 @@
-import sys
 import time
 import pygame
 import pygame_widgets
-
-import colors
+import colors_and_scenes
 from pygame_widgets.button import Button, ButtonArray
 
-
 secondary_thread_alive = True
+
+current_windown_on_screen = 0
+
+
 def exit():
     pygame.quit()
 
@@ -44,21 +45,12 @@ def init() -> pygame.Surface:
     return screen
 
 
-def main_loop(screen) -> None:
+def main_loop(screen, *args) -> None:
     fps = int(get_data_from_cfg()["delay"])
     try:
         while True:
-            events = pygame.event.get()
-            screen.fill(colors.WHITE)
-            for event in events:
-                if event.type == pygame.QUIT:
-                    exit()
-                    return
-            pygame_widgets.update(events)
-            pygame.display.update()
-            pygame.time.delay(fps)
-    except:
-        return
+            colors_and_scenes.scenes[current_windown_on_screen](screen, fps)
+    except: return
 
 
 def create_exit_button(screen):
@@ -69,7 +61,35 @@ def create_exit_button(screen):
     return Button(screen, x, y, width, height, text="quit", onClick=exit)
 
 
+def default_click_func(number: int) -> None:
+    print(f"Кнопка была нажата {number}")
+
+
+def create_regions(screen: pygame.Surface, count: int = 4, text: str = list(), on_click_funcs: list = list(),
+                   on_click_params: list = list()) -> pygame_widgets.button.ButtonArray:
+    if len(text) != count:
+        for i in range(count+1):
+            text.append(f"{i} region")
+    if len(on_click_funcs) != count:
+        for i in range(count+1):
+            on_click_funcs.append(default_click_func)
+    if len(on_click_params) != count:
+        on_click_params = [[i] for i in range(0, count+1)]
+    return ButtonArray(
+        screen,
+        0, 0,
+        screen.get_size()[0] // 2, screen.get_size()[1] // 2,
+        (2, count//2),
+        font=pygame.font.SysFont("arial", 30),
+        border=1,
+        texts=text,
+        onClicks=on_click_funcs,
+        onClickParams=on_click_params,
+    )
+
+
 def secondary_thread():
     while secondary_thread_alive:
         print("Второй поток")
         time.sleep(1)
+    print("Второй поток кончился")
