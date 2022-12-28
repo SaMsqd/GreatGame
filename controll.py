@@ -6,7 +6,7 @@ from pygame_widgets.button import Button, ButtonArray
 
 secondary_thread_alive = True
 
-current_windown_on_screen = 0
+current_window_on_screen = 0
 
 
 def exit():
@@ -49,7 +49,7 @@ def main_loop(screen, *args) -> None:
     fps = int(get_data_from_cfg()["delay"])
     try:
         while True:
-            colors_and_scenes.scenes[current_windown_on_screen](screen, fps)
+            colors_and_scenes.scenes[current_window_on_screen](screen, fps)
     except: return
 
 
